@@ -16,8 +16,8 @@ export const setAuthToken = (token) => {
   }
 };
 
-export const getProfileImage = (user_id) =>
-  `https://tawasol-server-nf3x.onrender.com/images/${user_id}`;
+export const getProfileImage = (user) =>
+  `https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/uploads/${user._id}-${user.Date}.png`;
 
 export const formatDate = (date) => {
   return new Intl.DateTimeFormat("en", {
