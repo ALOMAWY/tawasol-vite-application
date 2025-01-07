@@ -139,8 +139,15 @@ const CreateProfile = ({
   const { status } = formDate;
 
   const onChangeFile = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      console.error("No File Selected");
+      return;
+    }
+
     const data = new FormData();
-    data.append("file", e.target.files[0]);
+    data.append("file", file);
     if (data) uploadProfileImage(data);
   };
 
