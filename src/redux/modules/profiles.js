@@ -176,15 +176,11 @@ export function updateProfile(formData) {
 
 export const uploadProfileImage = (data) => async (dispatch) => {
   try {
-    const res = await api.post(
-      `https://res.cloudinary.com/dlfqbefjg/image/upload/v1234567890/uploads/`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const res = await api.post(`/upload`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     dispatch({
       type: UPLOAD_PROFILE_IMAGE,
       payload: res.data,
