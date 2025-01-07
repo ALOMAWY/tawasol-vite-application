@@ -198,7 +198,7 @@ const Home = ({
     if (isAuthenticated) {
       getProfileDetails();
 
-      if (user) setImage(getProfileImage(user));
+      if (user) setImage(getProfileImage(user._id));
     }
   }, [getProfileDetails, isAuthenticated, user]);
 
