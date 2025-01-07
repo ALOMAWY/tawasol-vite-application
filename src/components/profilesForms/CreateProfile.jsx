@@ -143,6 +143,7 @@ const CreateProfile = ({
 
     if (!file) {
       console.error("No File Selected");
+      alert("no Selected file");
       return;
     }
 
