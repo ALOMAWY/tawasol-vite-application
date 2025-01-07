@@ -176,7 +176,7 @@ export function updateProfile(formData) {
 
 export const uploadProfileImage = (data) => async (dispatch) => {
   try {
-    const res = await api.post(`/upload`, data, {
+    const res = await api.post(`profiles/upload`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
