@@ -177,7 +177,7 @@ export function updateProfile(formData) {
 export const uploadProfileImage = (data) => async (dispatch) => {
   try {
     const res = await api.post(
-      `http://localhost:4000/api/profiles/upload`,
+      `http://res.cloudinary.com/dlfqbefjg/image/upload/v1234567890/uploads/`,
       data,
       {
         headers: {

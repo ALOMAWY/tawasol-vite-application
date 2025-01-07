@@ -17,7 +17,7 @@ export const setAuthToken = (token) => {
 };
 
 export const getProfileImage = (user_id) =>
-  `http://res.cloudinary.com/dlfqbefjg/image/upload/v1234567890/uploads/${user_id}`;
+  `https://res.cloudinary.com/dlfqbefjg/image/upload/v1234567890/uploads/${user_id}`;
 
 export const formatDate = (date) => {
   return new Intl.DateTimeFormat("en", {
