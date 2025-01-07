@@ -97,7 +97,7 @@ const UserInfo = styled.div`
     border-radius: 2.3rem;
     width: 70%;
     aspect-ratio: 1 / 1;
-    object-fit: fill;
+    object-fit: cover;
   }
 
   h1 {

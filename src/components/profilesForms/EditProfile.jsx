@@ -194,7 +194,7 @@ const EditPorfile = ({
         </FormGroup>
         <FormGroup>
           <InputTitle>Chosse your profile image</InputTitle>
-          <input type="file" onChange={onChangeFile} />
+          <input type="file" accept="image/*" onChange={onChangeFile} />
         </FormGroup>
 
         <FormGroup>
