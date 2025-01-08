@@ -12,7 +12,8 @@ import { StyledForm } from "../styledComponents/index.jsx";
 import { useNavigate } from "react-router-dom";
 import { setAuthToken } from "../../utils";
 import { loadUser } from "../../redux/modules/users";
-import store from "../../redux/store";
+
+import imageCompression from "browser-image-compression";
 
 const HomePage = styled.section`
   width: 100%;
@@ -23,25 +24,23 @@ const HomePage = styled.section`
 `;
 
 const SectionHeader = styled.h1`
-  font-size: 3rem;
+  font-size: 2rem;
   letter-spacing: 1px;
   margin: 1.5rem;
+  text-transform: uppercase;
 `;
 
 const StyledProfileForm = styled(StyledForm)`
-  background: #0d6efd;
+  background: transparent;
   text-align: start;
   gap: 0.7rem;
   height: 80%;
-  overflow-y: scroll;
-  border-radius: 2rem 0 0 2rem;
   padding: 1rem;
-  border: 1rem solid #0d6efd;
-
+  box-shadow: 0px 0px 0px;
   input[type="submit"] {
-    background: #f8f9fa;
+    // background: #f8f9fa;
     font-size: 1.2rem;
-    color: #0d6efd;
+    color: #f8f9fa;
     margin-top: 2rem;
     border-radius: 0.6rem;
     cursor: pointer;
@@ -72,30 +71,30 @@ const SocialNetworkBtn = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  justify-content: start;
+  gap: 2rem;
   button {
     padding: 0.56rem;
     display: block;
-    outline: none;
-    border: none;
+    // outline: none;
+    // border: none;
     &:hover {
-      outline: none;
-      border: none;
+      // outline: none;
+      // border: none;
       opacity: 0.9;
     }
   }
 
   span {
-    color: #f8f9fa;
+    color: #0d6efd;
   }
 `;
 
 const CreateProfile = ({
-  getProfileDetails,
   createProfile,
   uploadProfileImage,
   profiles: { profile, loading },
+  users: { isAuthenticated },
 }) => {
   const initialState = {
     company: "",
@@ -118,27 +117,21 @@ const CreateProfile = ({
 
   const navigate = useNavigate();
 
-  const [account, setAccount] = useState();
-
   const token = localStorage.getItem("token");
-
-  const isAuthenticated = store.getState().users.isAuthenticated;
 
   useEffect(() => {
     if (!isAuthenticated) {
-      if (token) setAuthToken(token);
+      if (token) {
+        setAuthToken(token);
+      } else {
+        navigate("/");
+      }
     }
-
-    if (profile) {
-      setAccount(true);
-    } else {
-      getProfileDetails();
-    }
-  }, [profile, isAuthenticated, getProfileDetails, token]);
+  }, [profile, isAuthenticated, token]);
 
   const { status } = formDate;
 
-  const onChangeFile = (e) => {
+  const onChangeFile = async (e) => {
     const file = e.target.files[0];
 
     if (!file) {
@@ -146,9 +139,23 @@ const CreateProfile = ({
       return;
     }
 
-    const data = new FormData();
-    data.append("file", file);
-    if (data) uploadProfileImage(data);
+    const options = {
+      maxSizeMB: 2,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+
+      console.log(`File Compressing Successfuly 🖍️`, compressedFile);
+
+      const data = new FormData();
+      data.append("file", compressedFile);
+      if (data) await uploadProfileImage(data);
+    } catch (error) {
+      console.error(`Error while compressing the image:`, error);
+    }
   };
 
   const onChange = (e) => {
@@ -158,21 +165,11 @@ const CreateProfile = ({
     e.preventDefault();
     createProfile(formDate, navigate);
   };
-
-  const goToTheAccount = () => navigate("/home");
   return (
     <HomePage>
       <SectionHeader> Create Profile</SectionHeader>
 
       <StyledProfileForm onSubmit={onSubmit}>
-        {account ? (
-          <FormGroup>
-            <InputTitle>You Have Accounts ?</InputTitle>
-            <button onClick={goToTheAccount}>Alraedy I have an account</button>
-          </FormGroup>
-        ) : (
-          <></>
-        )}
         <InputTitle>Basic information</InputTitle>
         <FormGroup>
           <select name="status" value={status} onChange={onChange}>
@@ -321,7 +318,10 @@ const CreateProfile = ({
   );
 };
 
-const mapStateToProps = (state) => ({ profiles: state.profiles });
+const mapStateToProps = (state) => ({
+  profiles: state.profiles,
+  users: state.users,
+});
 
 export default connect(mapStateToProps, {
   getProfileDetails,

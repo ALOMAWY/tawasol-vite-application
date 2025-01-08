@@ -7,13 +7,12 @@ import PropTypes from "prop-types";
 
 import { register } from "../../redux/modules/users.js";
 
-import { showAlertMessage } from "../../redux/modules/alerts";
-
 import styled from "styled-components";
 
 import { StyledForm } from "../styledComponents/index.jsx";
 import Private from "../Private";
 import ProfileForm from "../profilesForms/CreateProfile.jsx";
+import { toast } from "react-toastify";
 
 const Section = styled.section`
   display: flex;
@@ -24,7 +23,7 @@ const Section = styled.section`
   height: 100%;
 `;
 
-const Register = ({ isAuthenticated, register, showAlertMessage }) => {
+const Register = ({ isAuthenticated, register }) => {
   const navigate = useNavigate();
   const [formDate, setFormData] = useState({
     name: "",
@@ -43,7 +42,7 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
     e.preventDefault();
 
     if (password !== password2) {
-      showAlertMessage("Passwords do not match", "error");
+      toast.error("Passwords Is Do Not Match");
     } else {
       register({ name, email, password });
     }
@@ -113,6 +112,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.users?.isAuthenticated || false,
 });
 
-export default connect(mapStateToProps, { showAlertMessage, register })(
-  Register
-);
+export default connect(mapStateToProps, { register })(Register);

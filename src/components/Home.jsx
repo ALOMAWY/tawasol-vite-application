@@ -195,12 +195,12 @@ const Home = ({
   const [image, setImage] = useState("");
 
   useEffect(() => {
+
     if (isAuthenticated) {
       getProfileDetails();
-
       if (user) setImage(getProfileImage(user._id));
     }
-  }, [getProfileDetails, isAuthenticated, user]);
+  }, [getProfileDetails, isAuthenticated]);
 
   const onError = () => {
     setImage(defaultImage);

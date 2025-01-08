@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { connect } from "react-redux";
 
-import { getProfileById, getProfileDetails } from "../redux/modules/profiles";
+import { getProfileById } from "../redux/modules/profiles";
 
 import defaultImage from "../assets/default.png";
 
@@ -164,7 +164,7 @@ const DetailsHeader = styled.div`
   }
 `;
 
-const Profile = ({ getProfileById, profiles: { profile }, match }) => {
+const Profile = ({ getProfileById, profiles: { profile } }) => {
   const [image, setImage] = useState("");
 
   let { id } = useParams();

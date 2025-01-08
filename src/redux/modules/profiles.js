@@ -1,10 +1,13 @@
 import { api } from "../../utils";
-import { showAlertMessage } from "./alerts";
+import { toast } from "react-toastify";
 
 const GET_PROFILE = "profiles/GET_PROFILE";
 const ERROR_GET_PROFILE = "profiles/ERROR_GET_PROFILE";
 const GET_PROFILES = "profiles/GET_PROFILES";
 const ERROR_GET_PROFILES = "profiles/ERROR_GET_PROFILES";
+
+const GET_PROFILE_BY_ID = "profiles/GET_PROFILE_BY_ID";
+const ERROR_GET_PROFILE_BY_ID = "profiles/ERROR_GET_PROFILE_BY_ID";
 
 const UPDATE_PROFILE = "profiles/UPDATE_PROFILE";
 const ERROR_UPDATE_PROFILE = "profiles/ERROR_UPDATE_PROFILE";
@@ -39,15 +42,11 @@ export function createProfile(formData, navigate) {
         type: CREATE_PROFILE,
         payload: res.data,
       });
+      toast.success("Great 🎉 Profile Created");
 
       navigate("/home");
-      dispatch(showAlertMessage("Created Account", "success"));
     } catch (error) {
       console.error(error);
-
-      error.response.data.errors.forEach((err) =>
-        dispatch(showAlertMessage(err.msg, "error"))
-      );
     }
   };
 }
@@ -61,9 +60,7 @@ export const deleteAccount = () => async (dispatch) => {
 
       dispatch({ type: CLEAR_PROFILE });
 
-      dispatch(
-        showAlertMessage("Your Account Has Been Permanently Deleted", "success")
-      );
+      toast.warning("Accont Has Been Deleted");
     } catch (error) {
       dispatch({
         type: ERROR_CLEAR_PROFILE,
@@ -86,14 +83,10 @@ export function addEducation(formData, navigate) {
         payload: res.data,
       });
 
-      dispatch(showAlertMessage("Education Added", "success"));
-
       navigate("/home");
     } catch (error) {
       if (error.response)
-        error.response.data.errors.forEach((err) =>
-          dispatch(showAlertMessage(err.msg, "error"))
-        );
+        error.response.data.errors.forEach((err) => toast.error(err.msg));
     }
   };
 }
@@ -106,12 +99,10 @@ export const deleteEducation = (edu_id) => async (dispatch) => {
       payload: res.data,
     });
 
-    dispatch(showAlertMessage("Education Deleted"));
+    toast.success("Education Deleted");
   } catch (error) {
     if (error.response)
-      error.response.data.errors.forEach((err) =>
-        dispatch(showAlertMessage(err.msg, "error"))
-      );
+      error.response.data.errors.forEach((err) => toast.error(err.msg));
   }
 };
 
@@ -124,15 +115,12 @@ export function addExperience(formData, navigate) {
         type: UPDATE_PROFILE,
         payload: res.data,
       });
-
-      dispatch(showAlertMessage("Experience Added", "success"));
+      toast.success("Experience Added");
 
       navigate("/home");
     } catch (error) {
       if (error.response)
-        error.response.data.errors.forEach((err) =>
-          dispatch(showAlertMessage(err.msg, "error"))
-        );
+        error.response.data.errors.forEach((err) => toast.error(err.msg));
     }
   };
 }
@@ -146,12 +134,10 @@ export const deleteExperience = (exp_id) => async (dispatch) => {
       payload: res.data,
     });
 
-    dispatch(showAlertMessage("Experience Deleted"));
+    toast.success("Experience Deleted");
   } catch (error) {
     if (error.response)
-      error.response.data.errors.forEach((err) =>
-        dispatch(showAlertMessage(err.msg, "error"))
-      );
+      error.response.data.errors.forEach((err) => toast.error(err.msg));
   }
 };
 
@@ -165,11 +151,11 @@ export function updateProfile(formData) {
         payload: res.data,
       });
 
-      // dispatch(showAlertMessage("Profile Updated"));
+      toast.success("Profile Updated");
     } catch (error) {
       console.error(error);
 
-      dispatch(showAlertMessage("error", "error"));
+      toast.error(error.msg);
     }
   };
 }
@@ -200,14 +186,10 @@ export const getUsersProfiles = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
+    console.error(error);
     dispatch({
       type: ERROR_GET_PROFILES,
     });
-
-    if (error.response)
-      error.response.data.errors.forEach((err) =>
-        dispatch(showAlertMessage(err.msg, "error"))
-      );
   }
 };
 export const getProfileById = (user_id) => async (dispatch) => {
@@ -216,18 +198,14 @@ export const getProfileById = (user_id) => async (dispatch) => {
     const res = await api.get(`/profiles/user/${user_id}`);
 
     dispatch({
-      type: GET_PROFILE,
+      type: GET_PROFILE_BY_ID,
       payload: res.data,
     });
   } catch (error) {
+    console.log(error);
     dispatch({
-      type: ERROR_GET_PROFILE,
+      type: ERROR_GET_PROFILE_BY_ID,
     });
-
-    if (error.response)
-      error.response.data.errors.forEach((err) =>
-        dispatch(showAlertMessage(err.msg, "error"))
-      );
   }
 };
 
@@ -245,6 +223,7 @@ export default function reducer(state = initialState, action) {
     case CREATE_PROFILE:
     case UPDATE_PROFILE:
     case GET_PROFILE:
+    case GET_PROFILE_BY_ID:
       return {
         ...state,
         loading: false,
@@ -275,6 +254,7 @@ export default function reducer(state = initialState, action) {
     case ERROR_UPLOAD_PROFILE_IMAGE:
     case ERROR_CREATE_PROFILE:
     case ERROR_UPDATE_PROFILE:
+    case ERROR_GET_PROFILE_BY_ID:
       return {
         ...state,
         loading: false,

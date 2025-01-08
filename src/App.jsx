@@ -37,6 +37,9 @@ import { loadUser } from "./redux/modules/users.js";
 
 // Alerts Setup
 
+const options = {
+  autoClose: 1000,
+};
 const Holder = styled.div`
   display: flex;
   flex-direction: column;
@@ -53,7 +56,7 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <ToastContainer />
+        <ToastContainer {...options} />
         <>
           <Holder>
             <Navbar />
@@ -91,7 +94,7 @@ function App() {
                 element={<Private components={Settings} />}
               />
               <Route
-                path="/profile/:id"
+                path="/profiles/:id"
                 element={<Private components={Profile} />}
               />
               <Route

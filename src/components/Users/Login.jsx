@@ -8,8 +8,6 @@ import PropTypes from "prop-types";
 
 import { login } from "../../redux/modules/users";
 
-import { showAlertMessage } from "../../redux/modules/alerts";
-
 import styled from "styled-components";
 
 import { StyledForm } from "../styledComponents";
@@ -25,7 +23,7 @@ const Section = styled.section`
   height: 100%;
 `;
 
-const Login = ({ isAuthenticated, login, showAlertMessage }) => {
+const Login = ({ isAuthenticated, login }) => {
   const [formDate, setFormData] = useState({
     email: "",
     password: "",
@@ -82,11 +80,10 @@ const Login = ({ isAuthenticated, login, showAlertMessage }) => {
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
-  showAlertMessage: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.users?.isAuthenticated || false,
 });
 
-export default connect(mapStateToProps, { showAlertMessage, login })(Login);
+export default connect(mapStateToProps, { login })(Login);

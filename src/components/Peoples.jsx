@@ -62,7 +62,7 @@ const Peoples = ({
       {!profiles
         ? null
         : profiles.map((profile) => (
-            <Link key={profile.user._id} to={`/profile/${profile.user._id}`}>
+            <Link key={profile.user._id} to={`/profiles/${profile.user._id}`}>
               <Member profile={profile} />
             </Link>
           ))}

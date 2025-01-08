@@ -92,7 +92,6 @@ const Sidebar = ({ users: { user }, getProfileDetails }) => {
       const width = document.documentElement.clientWidth;
       setMobileScreen(width <= 865 ? true : false);
 
-      getProfileDetails();
 
       if (user) {
         setImage(getProfileImage(user._id));

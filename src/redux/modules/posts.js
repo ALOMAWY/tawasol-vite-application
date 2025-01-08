@@ -1,5 +1,7 @@
 import { api } from "../../utils";
 
+import { toast } from "react-toastify";
+
 const GET_POST = "posts/GET_POST";
 const GET_POSTS = "posts/GET_POSTS";
 
@@ -48,6 +50,7 @@ export const addPost = (formDate) => async (dispatch) => {
     const res = await api.post(`/posts`, formDate);
 
     dispatch({ type: ADD_POST, payload: res.data });
+    toast.success("New Post");
   } catch (error) {
     dispatch({
       type: POST_ERROR,
@@ -63,6 +66,7 @@ export const removePost = (post_id) => async (dispatch) => {
     await api.delete(`/posts/${post_id}`);
 
     dispatch({ type: REMOVE_POST, payload: { _id: post_id } });
+    toast.success("Post Deleted");
   } catch (error) {
     dispatch({
       type: POST_ERROR,
@@ -78,6 +82,7 @@ export const addLike = (post_id) => async (dispatch) => {
     const res = await api.put(`/posts/like/${post_id}`);
 
     dispatch({ type: UPDATE_LIKES, payload: { id: post_id, likes: res.data } });
+    toast.success("Like");
   } catch (error) {
     console.error(error);
     dispatch({
@@ -94,6 +99,7 @@ export const removeLike = (post_id) => async (dispatch) => {
     const res = await api.put(`/posts/unlike/${post_id}`);
 
     dispatch({ type: UPDATE_LIKES, payload: res.data });
+    toast.success("Un-like");
   } catch (error) {
     dispatch({
       type: POST_ERROR,
@@ -109,6 +115,7 @@ export const addComment = (post_id, text) => async (dispatch) => {
     const res = await api.post(`/posts/comment/${post_id}`, { text });
 
     dispatch({ type: ADD_COMMENT, payload: res.data });
+    toast.success("Add Comment");
   } catch (error) {
     console.error(error);
     dispatch({
@@ -124,8 +131,9 @@ export const removeComment = (post_id, comment_id) => async (dispatch) => {
   try {
     const res = await api.delete(`/posts/comment/${post_id}/${comment_id}`);
 
-
     dispatch({ type: REMOVE_COMMENT, payload: res.data });
+
+    toast.success("Remove Comment");
   } catch (error) {
     dispatch({
       type: POST_ERROR,

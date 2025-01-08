@@ -4,15 +4,17 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import {
   getProfileDetails,
-  createProfile,
+  getProfileById,
   updateProfile,
   uploadProfileImage,
 } from "../../redux/modules/profiles";
 import { StyledForm } from "../styledComponents/index.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setAuthToken } from "../../utils";
 import { loadUser } from "../../redux/modules/users";
-import store from "../../redux/store";
+
+import imageCompression from "browser-image-compression";
+import { toast } from "react-toastify";
 
 const HomePage = styled.section`
   width: 100%;
@@ -22,20 +24,24 @@ const HomePage = styled.section`
   justify-content: start;
 `;
 
+const SectionHeader = styled.h1`
+  font-size: 2rem;
+  letter-spacing: 1px;
+  margin: 1.5rem;
+  text-transform: uppercase;
+`;
+
 const StyledProfileForm = styled(StyledForm)`
-  background: #0d6efd;
+  background: transparent;
   text-align: start;
   gap: 0.7rem;
   height: 80%;
-  overflow-y: scroll;
-  border-radius: 2rem 0 0 2rem;
   padding: 1rem;
-  border: 1rem solid #0d6efd;
-
+  box-shadow: 0px 0px 0px;
   input[type="submit"] {
-    background: #f8f9fa;
+    // background: #f8f9fa;
     font-size: 1.2rem;
-    color: #0d6efd;
+    color: #f8f9fa;
     margin-top: 2rem;
     border-radius: 0.6rem;
     cursor: pointer;
@@ -54,26 +60,11 @@ const FormGroup = styled.div`
   gap: 0.7rem;
 
   input,
+  input[type="submit"],
   select,
   textarea {
     width: 100%;
     margin-top: 0px;
-  }
-
-  &.btns {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    margin-top: 2rem;
-
-    input {
-      width: fit-content;
-      margin: 0;
-    }
-
-    a {
-      color: #fff;
-    }
   }
 `;
 
@@ -81,30 +72,31 @@ const SocialNetworkBtn = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  justify-content: start;
+  gap: 2rem;
   button {
     padding: 0.56rem;
     display: block;
-    outline: none;
-    border: none;
+    // outline: none;
+    // border: none;
     &:hover {
-      outline: none;
-      border: none;
+      // outline: none;
+      // border: none;
       opacity: 0.9;
     }
   }
 
   span {
-    color: #f8f9fa;
+    color: #0d6efd;
   }
 `;
 
-const EditPorfile = ({
-  getProfileDetails,
+const EditProfile = ({
   createProfile,
   uploadProfileImage,
+  getProfileById,
   profiles: { profile, loading },
+  users: { user, isAuthenticated },
 }) => {
   const initialState = {
     company: "",
@@ -123,30 +115,73 @@ const EditPorfile = ({
   };
 
   const [formDate, setFormData] = useState(initialState);
+
   const [displaySocialInputs, toggleSocialStatus] = useState(false);
 
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
-  const isAuthenticated = store.getState().users.isAuthenticated;
+  const handleUserData = async () => {
+    try {
+      const fetchingData = await getProfileById(user._id);
+
+      if (fetchingData) {
+        setFormData((prev) => ({
+          ...prev,
+          ...profile,
+        }));
+        console.log(fetchingData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
-      if (token) setAuthToken(token);
+      if (token) {
+        setAuthToken(token);
+      } else {
+        navigate("/");
+      }
     }
-
-    if (!profile) {
-      getProfileDetails();
-    }
-  }, [profile, isAuthenticated, getProfileDetails, token]);
+    handleUserData();
+  }, [user._id, isAuthenticated, token]);
 
   const { status } = formDate;
 
-  const onChangeFile = (e) => {
-    const data = new FormData();
-    data.append("file", e.target.files[0]);
-    if (data) uploadProfileImage(data);
+  const onChangeFile = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      console.error("No File Selected");
+      return;
+    }
+
+    const options = {
+      maxSizeMB: 2,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+
+      const data = new FormData();
+
+      data.append("file", compressedFile);
+
+      try {
+        if (data) await uploadProfileImage(data);
+
+        toast.success("Logo Is Uploaded");
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(`Error while compressing the image:`, error);
+    }
   };
 
   const onChange = (e) => {
@@ -154,11 +189,12 @@ const EditPorfile = ({
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    createProfile(formDate, navigate);
+    updateProfile(formDate, navigate);
   };
-
   return (
     <HomePage>
+      <SectionHeader> Update Profile</SectionHeader>
+
       <StyledProfileForm onSubmit={onSubmit}>
         <InputTitle>Basic information</InputTitle>
         <FormGroup>
@@ -204,30 +240,35 @@ const EditPorfile = ({
             name="company"
             placeholder="Company"
             onChange={onChange}
+            value={formDate.company}
           />
           <input
             type="text"
             name="website"
             placeholder="Website"
             onChange={onChange}
+            value={formDate.website}
           />
           <input
             type="text"
             name="location"
             placeholder="Location"
             onChange={onChange}
+            value={formDate.location}
           />
           <input
             type="text"
             name="country"
             placeholder="Country"
             onChange={onChange}
+            value={formDate.country}
           />
           <input
             type="text"
             name="skills"
             placeholder="* Skills"
             onChange={onChange}
+            value={formDate.skills}
           />
 
           <textarea
@@ -235,6 +276,7 @@ const EditPorfile = ({
             name="bio"
             placeholder="A Short Bio Of Yourself"
             onChange={onChange}
+            value={formDate.bio}
           />
         </FormGroup>
         <FormGroup>
@@ -258,36 +300,42 @@ const EditPorfile = ({
                 name="twitter"
                 placeholder="Twitter URL"
                 onChange={onChange}
+                value={formDate.twitter}
               />
               <input
                 type="text"
                 name="facebook"
                 placeholder="Facebook URL"
                 onChange={onChange}
+                value={formDate.facebook}
               />
               <input
                 type="text"
                 name="instagram"
                 placeholder="Instagram URL"
                 onChange={onChange}
+                value={formDate.instagram}
               />
               <input
                 type="text"
                 name="github"
                 placeholder="Github URL"
                 onChange={onChange}
+                value={formDate.github}
               />
               <input
                 type="text"
                 name="linkedin"
                 placeholder="Linkedin URL"
                 onChange={onChange}
+                value={formDate.linkedin}
               />
               <input
                 type="text"
                 name="youtube"
                 placeholder="Youtube URL"
                 onChange={onChange}
+                value={formDate.youtube}
               />
             </Fragment>
           ) : (
@@ -295,26 +343,28 @@ const EditPorfile = ({
           )}
         </FormGroup>
 
-        <FormGroup className="btns">
+        <FormGroup>
           <input
             type="submit"
             name="website"
-            value="Send"
+            value="Update"
             placeholder="Website"
           />
-          <Link to={"/home"}>Go Back</Link>
         </FormGroup>
       </StyledProfileForm>
     </HomePage>
   );
 };
 
-const mapStateToProps = (state) => ({ profiles: state.profiles });
+const mapStateToProps = (state) => ({
+  profiles: state.profiles,
+  users: state.users,
+});
 
 export default connect(mapStateToProps, {
   getProfileDetails,
   uploadProfileImage,
+  getProfileById,
   updateProfile,
-  createProfile,
   loadUser,
-})(EditPorfile);
+})(EditProfile);

@@ -1,5 +1,5 @@
 import { api, setAuthToken } from "../../utils";
-import { showAlertMessage } from "./alerts";
+import { toast } from "react-toastify";
 
 const REGISTER_SUCCESS = "users/REGISTER_SUCCESES";
 const REGISTER_FAIL = "users/REGISTER_FAIL";
@@ -39,6 +39,9 @@ export function register(formData) {
 
       // Optionally load user data after successful registration
       dispatch(loadUser());
+      toast.success("Hello, you have become a member of this community.", {
+        autoClose: 5000,
+      });
     } catch (error) {
       // Log the complete error object for debugging
       console.error("Registration error:", error);
@@ -49,7 +52,7 @@ export function register(formData) {
         : "An error occurred";
 
       // Show an alert with the error message
-      dispatch(showAlertMessage(errorMsg, "error"));
+      toast.error(errorMsg);
 
       // Dispatch failure action
       dispatch({
@@ -83,7 +86,7 @@ export function login(email, password) {
         : "An error occurred";
 
       // Show an alert with the error message
-      dispatch(showAlertMessage(errorMsg, "error"));
+      toast.error(errorMsg);
 
       // Dispatch failure action
       dispatch({
