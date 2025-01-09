@@ -14,10 +14,13 @@ const LOGOUT = "users/LOGOUT";
 export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get("/users");
+
     dispatch({
       type: USER_LOADED,
       payload: res.data,
     });
+
+    if (!res.data) dispatch(logout());
   } catch (error) {
     dispatch({
       type: USER_ERROR,

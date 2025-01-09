@@ -55,8 +55,8 @@ const ContentHolder = styled.div`
   width: 100%;
 `;
 
-const Landing = ({ users: { isAuthenticated } }) => {
-  if (isAuthenticated) return <Navigate to="/home" />;
+const Landing = ({ users: { user, isAuthenticated } }) => {
+  if (isAuthenticated && user) return <Navigate to="/home" />;
   return (
     <Section>
       <ContentHolder>

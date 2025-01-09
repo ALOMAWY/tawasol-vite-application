@@ -201,6 +201,7 @@ export const getProfileById = (user_id) => async (dispatch) => {
       type: GET_PROFILE_BY_ID,
       payload: res.data,
     });
+    return res.data;
   } catch (error) {
     console.log(error);
     dispatch({

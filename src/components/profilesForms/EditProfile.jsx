@@ -77,11 +77,8 @@ const SocialNetworkBtn = styled.div`
   button {
     padding: 0.56rem;
     display: block;
-    // outline: none;
-    // border: none;
+
     &:hover {
-      // outline: none;
-      // border: none;
       opacity: 0.9;
     }
   }
@@ -92,10 +89,10 @@ const SocialNetworkBtn = styled.div`
 `;
 
 const EditProfile = ({
-  createProfile,
+  updateProfile,
   uploadProfileImage,
   getProfileById,
-  profiles: { profile, loading },
+  profiles: {},
   users: { user, isAuthenticated },
 }) => {
   const initialState = {
@@ -127,11 +124,7 @@ const EditProfile = ({
       const fetchingData = await getProfileById(user._id);
 
       if (fetchingData) {
-        setFormData((prev) => ({
-          ...prev,
-          ...profile,
-        }));
-        console.log(fetchingData);
+        setFormData({ ...fetchingData, ...fetchingData.social });
       }
     } catch (error) {
       console.error(error);

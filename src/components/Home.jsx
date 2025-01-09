@@ -23,6 +23,7 @@ import Experiences from "./ProfileInfo/Experience";
 import { getProfileImage } from "../utils";
 
 import Spinner from "./Spinner";
+import store from "../redux/store";
 
 const ProfilePage = styled.section`
   width: 100%;
@@ -195,7 +196,6 @@ const Home = ({
   const [image, setImage] = useState("");
 
   useEffect(() => {
-
     if (isAuthenticated) {
       getProfileDetails();
       if (user) setImage(getProfileImage(user._id));
@@ -205,6 +205,8 @@ const Home = ({
   const onError = () => {
     setImage(defaultImage);
   };
+
+
 
   if (loading) {
     return <Spinner />;

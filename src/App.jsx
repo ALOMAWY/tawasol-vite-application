@@ -38,7 +38,7 @@ import { loadUser } from "./redux/modules/users.js";
 // Alerts Setup
 
 const options = {
-  autoClose: 1000,
+  autoClose: 3000,
 };
 const Holder = styled.div`
   display: flex;
