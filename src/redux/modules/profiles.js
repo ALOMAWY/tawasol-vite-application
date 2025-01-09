@@ -141,7 +141,7 @@ export const deleteExperience = (exp_id) => async (dispatch) => {
   }
 };
 
-export function updateProfile(formData) {
+export function updateProfile(formData, navigate) {
   return async function updateProfileThunk(dispatch) {
     try {
       const res = await api.post("/profiles", formData);
@@ -152,6 +152,7 @@ export function updateProfile(formData) {
       });
 
       toast.success("Profile Updated");
+      navigate("/home");
     } catch (error) {
       console.error(error);
 
