@@ -72,7 +72,7 @@ const Sidebar = ({ users: { user }, getProfileDetails }) => {
 
   const [isShowing, setIsShowing] = useState(false);
 
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   const [errored, setErrored] = useState(false);
 
@@ -91,7 +91,6 @@ const Sidebar = ({ users: { user }, getProfileDetails }) => {
     const updateScreenSize = () => {
       const width = document.documentElement.clientWidth;
       setMobileScreen(width <= 865 ? true : false);
-
 
       if (user) {
         setImage(getProfileImage(user._id));

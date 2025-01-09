@@ -193,7 +193,7 @@ const Home = ({
   profiles: { profile, loading, error },
   users: { user, isAuthenticated },
 }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -205,8 +205,6 @@ const Home = ({
   const onError = () => {
     setImage(defaultImage);
   };
-
-
 
   if (loading) {
     return <Spinner />;

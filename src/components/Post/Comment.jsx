@@ -16,7 +16,7 @@ const Comment = ({
   users,
   removeComment,
 }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   const onError = () => {
     setImage(defaultImage);

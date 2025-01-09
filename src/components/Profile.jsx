@@ -165,7 +165,7 @@ const DetailsHeader = styled.div`
 `;
 
 const Profile = ({ getProfileById, profiles: { profile } }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   let { id } = useParams();
 

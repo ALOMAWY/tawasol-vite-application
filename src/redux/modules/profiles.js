@@ -152,6 +152,7 @@ export function updateProfile(formData, navigate) {
       });
 
       toast.success("Profile Updated");
+      
       navigate("/home");
     } catch (error) {
       console.error(error);

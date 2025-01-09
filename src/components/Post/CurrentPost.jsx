@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { PostLayout } from "../styledComponents";
 
 const CurrentPost = ({ post: { user, text, comments, date, name, likes } }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   const onError = () => {
     setImage(defaultImage);

@@ -20,7 +20,7 @@ const Post = ({
   users,
   post: { _id, user, text, comments, date, name, likes },
 }) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   const [liked, setLiked] = useState(false);
 

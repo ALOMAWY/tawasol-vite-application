@@ -72,7 +72,7 @@ const Peoples = ({
 
 const Member = ({ profile }) => {
   const [errored, setErrored] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(defaultImage);
 
   useEffect(() => {
     setImage(getProfileImage(profile.user._id));
