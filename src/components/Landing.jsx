@@ -96,7 +96,7 @@ const Landing = ({
               Log In
             </Button>
             <Button
-              to="http://localhost:4000/api/auth/google"
+              to="https://tawasol-server-fufp.onrender.com/api/auth/google"
               className="btn btn-light w-25 m-auto"
               style={{
                 display: "flex",
@@ -116,7 +116,7 @@ const Landing = ({
               </div>
             </Button>
             <Button
-              to="http://localhost:4000/api/auth/facebook"
+              to="https://tawasol-server-fufp.onrender.com/api/auth/facebook"
               className="btn btn-light w-25 m-auto"
               style={{
                 display: "flex",
