@@ -1,10 +1,15 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 import styled from "styled-components";
 import Title from "./LandingTitles";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import Spinner from "./Spinner";
+import { loadUser, registerOnTheerdParty } from "../redux/modules/users";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { setAuthToken } from "../utils";
 
 // export default App;
 
@@ -40,7 +45,7 @@ const Button = styled(Link)`
   border: 2px solid #fff;
   background: #fff;
   border-radius: 15px;
-  width: 150px;
+  width: 170px;
   display: block;
   margin: auto;
   margin-bottom: 1rem;
@@ -55,8 +60,24 @@ const ContentHolder = styled.div`
   width: 100%;
 `;
 
-const Landing = ({ users: { user, isAuthenticated } }) => {
+const Landing = ({
+  users: { user, isAuthenticated, loading },
+  loadUser,
+  registerOnTheerdParty,
+}) => {
+  const dispatch = useDispatch();
+
   if (isAuthenticated && user) return <Navigate to="/home" />;
+
+  if (loading && !user) {
+    loadUser();
+    return <Spinner />;
+  }
+
+  useEffect(() => {
+    registerOnTheerdParty();
+  }, [dispatch]);
+
   return (
     <Section>
       <ContentHolder>
@@ -73,6 +94,41 @@ const Landing = ({ users: { user, isAuthenticated } }) => {
             </Button>
             <Button to="/login" className="btn btn-light w-25 m-auto">
               Log In
+            </Button>
+            <Button
+              to="http://localhost:4000/api/auth/google"
+              className="btn btn-light w-25 m-auto"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: ".4rem",
+                fontSize: "1.4rem",
+              }}
+            >
+              <div style={{ fontSize: "2rem" }}>
+                <span style={{ color: "#4285f4" }}>G</span>
+                <span style={{ color: "#ea4335" }}>o</span>
+                <span style={{ color: "#fbbc05" }}>o</span>
+                <span style={{ color: "#4285f4" }}>g</span>
+                <span style={{ color: "#34a853" }}>l</span>
+                <span style={{ color: "#ea4335" }}>e</span>
+              </div>
+            </Button>
+            <Button
+              to="http://localhost:4000/api/auth/facebook"
+              className="btn btn-light w-25 m-auto"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: ".4rem",
+                fontSize: "1.4rem",
+                color: "#1877f2",
+              }}
+            >
+              <FontAwesomeIcon icon={faFacebook} fontSize={40} />
+              Facebook
             </Button>
           </Fragment>
         ) : (
@@ -92,4 +148,6 @@ const Landing = ({ users: { user, isAuthenticated } }) => {
 const mapStateToProps = (state) => ({
   users: state.users,
 });
-export default connect(mapStateToProps)(Landing);
+export default connect(mapStateToProps, { loadUser, registerOnTheerdParty })(
+  Landing
+);

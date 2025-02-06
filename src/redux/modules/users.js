@@ -1,5 +1,9 @@
 import { api, setAuthToken } from "../../utils";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+
+const TP_REGESTER_SUCCESS = "users/TP_REGESTER_SUCCESS";
+const TP_REGESTER_FAIL = "users/TP_REGESTER_FAIL";
 
 const REGISTER_SUCCESS = "users/REGISTER_SUCCESES";
 const REGISTER_FAIL = "users/REGISTER_FAIL";
@@ -65,6 +69,52 @@ export function register(formData) {
   };
 }
 
+export function registerOnTheerdParty() {
+  return async function registerOnTheerdPartyThunk(dispatch) {
+    try {
+      // Making the API request
+      const res = await api.get("/auth/token");
+
+      if (!res.data || !res.data.token) {
+        throw new Error("Token Not Found");
+      }
+
+      const token = res.data.token;
+
+      console.log(token);
+
+      // Dispatch success action if API call is successful
+      dispatch({
+        type: TP_REGESTER_SUCCESS,
+        payload: res.data,
+      });
+
+      // Optionally load user data after successful registration
+      // dispatch(loadUser());
+
+      // toast.success("Hello, you have become a member of this community.", {
+      //   autoClose: 5000,
+      // });
+    } catch (error) {
+      // Log the complete error object for debugging
+      console.error("Registration error:", error);
+
+      // Safely handle API errors
+      const errorMsg = error.response
+        ? error.response.data.errors[0].msg
+        : "An error occurred";
+
+      // Show an alert with the error message
+      toast.error(errorMsg);
+
+      // Dispatch failure action
+      dispatch({
+        type: TP_REGESTER_FAIL,
+      });
+    }
+  };
+}
+
 export function login(email, password) {
   return async function loginThunk(dispatch) {
     try {
@@ -99,7 +149,17 @@ export function login(email, password) {
   };
 }
 
-export const logout = () => (dispatch) => {
+export const logout = () => async (dispatch) => {
+  try {
+    const res = await api.delete("/auth/token");
+
+    console.log(res);
+
+    localStorage.removeItem("token");
+  } catch (error) {
+    console.error(error);
+  }
+
   dispatch({ type: LOGOUT });
 };
 
@@ -124,6 +184,7 @@ export default function reducer(state = initialState, action) {
 
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
+    case TP_REGESTER_SUCCESS:
       setAuthToken(payload.token);
 
       return {
@@ -135,6 +196,7 @@ export default function reducer(state = initialState, action) {
 
     case REGISTER_FAIL:
     case LOGIN_FAIL:
+    case TP_REGESTER_FAIL:
       setAuthToken();
 
       return {

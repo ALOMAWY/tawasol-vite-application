@@ -10,7 +10,7 @@ import {
   getProfileDetails,
 } from "../redux/modules/profiles";
 
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 
 import defaultImage from "../assets/default.png";
 

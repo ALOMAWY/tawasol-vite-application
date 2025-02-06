@@ -34,6 +34,7 @@ import store from "./redux/store.js";
 import { Provider } from "react-redux";
 import { setAuthToken } from "./utils/index.js";
 import { loadUser } from "./redux/modules/users.js";
+import GoogleCallbackPage from "./components/GoogleCallbackPage.jsx";
 
 // Alerts Setup
 
@@ -61,7 +62,11 @@ function App() {
           <Holder>
             <Navbar />
             <Routes>
-              <Route exact path="/" element={<Landing />}></Route>
+              <Route exact path="/:token?" element={<Landing />}></Route>
+              <Route
+                path="/auth/google/callback"
+                element={<GoogleCallbackPage />}
+              />
               <Route path="/register" element={<Register />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route
