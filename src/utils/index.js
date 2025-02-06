@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-  // baseURL: "https://tawasol-server-fufp.onrender.com/api",
-  baseURL: "http://localhost:4000/api",
+  baseURL: "https://tawasol-server-fufp.onrender.com/api",
+  // baseURL: "http://localhost:4000/api",
   withCredentials: true,
 });
 
